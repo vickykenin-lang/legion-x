@@ -1,0 +1,37 @@
+version: 1
+engine:
+  name: LEGION-X
+  tagline: Many Powers. One Mission.
+  timezone: Asia/Kolkata
+  daily_original_reels: 3
+  initial_budget_inr: 0
+
+agents:
+  oracle:
+    responsibility: trend_research_and_idea_scoring
+    output_state: SCORED
+  scripter:
+    responsibility: hooks_stories_scenes_and_prompts
+    output_state: SCRIPTED
+  forge:
+    responsibility: asset_generation_and_video_assembly
+    output_state: ASSEMBLED
+  guardian:
+    responsibility: technical_content_and_policy_qa
+    pass_state: APPROVED
+    fail_state: MANUAL_REVIEW
+  flash:
+    responsibility: scheduling_and_publishing
+    output_state: PUBLISHED
+  vision:
+    responsibility: analytics_and_performance_scoring
+    output_state: MEASURED
+  phoenix:
+    responsibility: winner_variation_generation
+    input_classification: WINNER
+    output_state: IDEA
+
+guardian:
+  minimum_score: 80
+  require_human_review_on_failure: true
+  auto_publish_without_approval: false
