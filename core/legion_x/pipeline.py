@@ -37,6 +37,13 @@ class ContentPackage:
     created_at: str
 
 
+@dataclass(frozen=True)
+class MediaReview:
+    decision: str
+    score: int
+    reasons: list[str]
+
+
 def oracle(seed: str) -> dict[str, str]:
     """Select an idea deterministically so local runs are reproducible."""
     index = int(hashlib.sha256(seed.encode()).hexdigest(), 16) % len(IDEAS)
@@ -79,6 +86,40 @@ def guardian(package: dict[str, object]) -> tuple[int, list[str]]:
         score -= 15
         reasons.append("missing_caption")
     return max(score, 0), reasons
+
+
+def guardian_media(metadata: dict[str, object]) -> MediaReview:
+    """Block uncompetitive video outputs before publishing.
+
+    This is intentionally stricter than the early story check. A reel may have
+    a good script but still be rejected for being static, silent, watermarked,
+    or missing a first-two-second visual pattern break.
+    """
+    score = 100
+    reasons: list[str] = []
+    required_true = {
+        "has_real_motion": "static_or_insufficient_motion",
+        "has_voiceover": "missing_voiceover",
+        "has_licensed_music_or_sfx": "missing_sound_design",
+        "has_first_two_second_pattern_break": "weak_opening_hook",
+        "has_subtitles": "missing_subtitles",
+        "is_1080x1920": "incorrect_output_format",
+    }
+    for field, reason in required_true.items():
+        if metadata.get(field) is not True:
+            score -= 18
+            reasons.append(reason)
+    if metadata.get("has_provider_watermark") is True:
+        score = 0
+        reasons.append("provider_watermark")
+    if float(metadata.get("average_shot_length_seconds", 99)) > 2.5:
+        score -= 15
+        reasons.append("slow_edit_pacing")
+    if int(metadata.get("distinct_visual_beats", 0)) < 8:
+        score -= 15
+        reasons.append("insufficient_visual_beats")
+    decision = "APPROVED" if score >= 85 and not reasons else "REJECTED"
+    return MediaReview(decision=decision, score=max(score, 0), reasons=reasons)
 
 
 def init_database(path: Path) -> sqlite3.Connection:
