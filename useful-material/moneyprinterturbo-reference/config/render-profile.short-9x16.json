@@ -1,0 +1,23 @@
+{
+  "profile_id": "shorts-9x16-v1",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "video_codec": "libx264",
+  "pixel_format": "yuv420p",
+  "audio_codec": "aac",
+  "audio_sample_rate": 48000,
+  "subtitle_safe_area": {
+    "top_percent": 12,
+    "bottom_percent": 18,
+    "side_percent": 8
+  },
+  "technical_qa": {
+    "require_audio_stream": true,
+    "reject_black_end_seconds": 0.25,
+    "minimum_duration_seconds": 15,
+    "maximum_duration_seconds": 25,
+    "maximum_file_size_mb": 100
+  }
+}
+
