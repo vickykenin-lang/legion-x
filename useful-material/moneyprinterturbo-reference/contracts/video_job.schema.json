@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://legion-x.local/schemas/video-job.schema.json",
+  "title": "LEGION-X Video Job",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["job_id", "project", "topic", "script", "scenes", "render_profile"],
+  "properties": {
+    "job_id": {"type": "string", "minLength": 1},
+    "project": {"type": "string", "minLength": 1},
+    "topic": {"type": "string", "minLength": 1},
+    "script": {"type": "string", "minLength": 1},
+    "language": {"type": "string", "default": "hi-IN"},
+    "scenes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["scene_id", "visual_path", "duration_seconds"],
+        "properties": {
+          "scene_id": {"type": "string"},
+          "visual_path": {"type": "string"},
+          "duration_seconds": {"type": "number", "exclusiveMinimum": 0},
+          "character_id": {"type": ["string", "null"]},
+          "continuity_hash": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "voice_path": {"type": ["string", "null"]},
+    "music_path": {"type": ["string", "null"]},
+    "render_profile": {"type": "string", "const": "shorts-9x16-v1"},
+    "approval_required": {"type": "boolean", "const": true},
+    "publish_targets": {
+      "type": "array",
+      "items": {"enum": ["youtube", "instagram", "facebook"]},
+      "uniqueItems": true
+    }
+  }
+}
+
